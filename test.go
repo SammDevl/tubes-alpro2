@@ -15,9 +15,12 @@ type Jadwal struct {
 type TabJadwal [MAX_DATA]Jadwal
 
 func cekKonflikJadwal(A TabJadwal, n int, hari string, mulai, selesai int) bool {
-	var i int = 0
-	var konflik bool = false
-
+	var i int
+	var konflik bool
+	
+	i = 0
+	konflik = false
+	
 	for i < n && konflik == false {
 		if A[i].Hari == hari {
 			if mulai < A[i].JamSelesai && selesai > A[i].JamMulai {
@@ -110,8 +113,11 @@ func hapusJadwal(A *TabJadwal, n *int, mk string) {
 }
 
 func cariSequentialMK(A TabJadwal, n int, mk string) {
-	var i int = 0
-	var found bool = false
+	var i int
+	var found bool
+	
+	found = false
+	i = 0
 
 	fmt.Print("\n--- Hasil Pencarian Sequential (MK: ", mk, ") ---\n")
 	for i < n {
@@ -131,6 +137,7 @@ func cariSequentialMK(A TabJadwal, n int, mk string) {
 func urutBerdasarkanDosen(A *TabJadwal, n int) {
 	var i, j int
 	var temp Jadwal
+	
 	i = 1
 	for i < n {
 		temp = A[i]
@@ -150,8 +157,11 @@ func cariBinaryDosen(A TabJadwal, n int, dosen string) {
 	var left int = 0
 	var right int = n - 1
 	var mid int
-	var found bool = false
-	var idx int = -1
+	var found bool 
+	var idx int
+	
+	found = false
+	idx = -1
 
 	for left <= right && found == false {
 		mid = (left + right) / 2
@@ -176,14 +186,19 @@ func cariBinaryDosen(A TabJadwal, n int, dosen string) {
 func tampilkanStatistik(A TabJadwal, n int) {
 	var hariDicari string
 	var jamSekarang int
+	
 	fmt.Print("Masukkan Hari ini (Contoh: Senin): ")
 	fmt.Scan(&hariDicari)
 	fmt.Print("Masukkan Jam saat ini (HHMM, Contoh: 1200): ")
 	fmt.Scan(&jamSekarang)
 
-	var totalMenit int = 0
-	var sisaKelas int = 0
-	var i int = 0
+	var totalMenit int
+	var sisaKelas int
+	var i int
+	
+	totalMenit = 0
+	sisaKelas = 0
+	i = 0
 
 	for i < n {
 		var jamM int = A[i].JamMulai / 100
@@ -209,7 +224,10 @@ func tampilkanStatistik(A TabJadwal, n int) {
 }
 
 func tampilkanSemua(A TabJadwal, n int) {
-	var i int = 0
+	var i int
+	
+	i = 0
+	
 	fmt.Print("\n--- Daftar Jadwal Kelas ---\n")
 	if n == 0 {
 		fmt.Print("Belum ada data jadwal.\n")
@@ -261,9 +279,14 @@ func urutBerdasarkanHari(A *TabJadwal, n int) {
 
 func main() {
 	var data TabJadwal
-	var nData int = 0
+	var nData int
 	var pilihan int
-	var berjalan bool = true
+	var berjalan bool
+	var mk, dos, ru, hr, mkLama, mkHapus, dosCari, mkCari string
+	var jm, js int
+	
+	nData = 0
+	berjalan = true
 	
 	tambahJadwal(&data, &nData, "Matvek", "Mahmud", "TULT0714", "Senin", 1030, 1330)
 	tambahJadwal(&data, &nData, "Kalkulus", "Adit", "TULT0707", "Senin", 1330,1530)
@@ -293,8 +316,6 @@ func main() {
 			berjalan = false
 			fmt.Print("Terima kasih.\n")
 		} else if pilihan == 1 {
-			var mk, dos, ru, hr string
-			var jm, js int
 			fmt.Print("Mata Kuliah: ")
 			fmt.Scan(&mk)
 			fmt.Print("Dosen: ")
@@ -309,12 +330,10 @@ func main() {
 			fmt.Scan(&js)
 			tambahJadwal(&data, &nData, mk, dos, ru, hr, jm, js)
 		} else if pilihan == 2 {
-			var mkLama string
 			fmt.Print("Masukkan Nama MK yang ingin diubah: ")
 			fmt.Scan(&mkLama)
 			ubahJadwal(&data, nData, mkLama)
 		} else if pilihan == 3 {
-			var mkHapus string
 			fmt.Print("Masukkan Nama MK yang ingin dihapus: ")
 			fmt.Scan(&mkHapus)
 			hapusJadwal(&data, &nData, mkHapus)
@@ -323,12 +342,10 @@ func main() {
 		} else if pilihan == 5 {
 			urutBerdasarkanHari(&data, nData)
 		} else if pilihan == 6 {
-			var dosCari string
 			fmt.Print("Masukkan Nama Dosen: ")
 			fmt.Scan(&dosCari)
 			cariBinaryDosen(data, nData, dosCari) 
 		} else if pilihan == 7 {
-			var mkCari string
 			fmt.Print("Masukkan Nama MK: ")
 			fmt.Scan(&mkCari)
 			cariSequentialMK(data, nData, mkCari)
