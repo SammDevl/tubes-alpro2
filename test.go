@@ -1,0 +1,341 @@
+package main
+import "fmt"
+
+const MAX_DATA = 1000
+
+type Jadwal struct {
+	NamaMK     string
+	Dosen      string
+	Ruangan    string
+	Hari       string
+	JamMulai   int
+	JamSelesai int
+}
+
+type TabJadwal [MAX_DATA]Jadwal
+
+func cekKonflikJadwal(A TabJadwal, n int, hari string, mulai, selesai int) bool {
+	var i int = 0
+	var konflik bool = false
+
+	for i < n && konflik == false {
+		if A[i].Hari == hari {
+			if mulai < A[i].JamSelesai && selesai > A[i].JamMulai {
+				konflik = true
+				fmt.Printf("\nKonflik! Sudah ada kelas %s dengan Dosen %s Ruangan %s Pada Hari %s Jam %d-%d\n", A[i].NamaMK, A[i].Dosen, A[i].Ruangan, A[i].Hari, A[i].JamMulai, A[i].JamSelesai)
+
+			}
+		}
+		i = i + 1
+	}
+
+	return konflik
+}
+
+func tambahJadwal(A *TabJadwal, n *int, mk, dosen, ruangan, hari string, mulai, selesai int) {
+	if *n < MAX_DATA {
+		if cekKonflikJadwal(*A, *n, hari, mulai, selesai) == true {
+			fmt.Print("Data gagal ditambahkan karena terjadi konflik jadwal.\n")
+		} else {
+			A[*n].NamaMK = mk
+			A[*n].Dosen = dosen
+			A[*n].Ruangan = ruangan
+			A[*n].Hari = hari
+			A[*n].JamMulai = mulai
+			A[*n].JamSelesai = selesai
+			*n = *n + 1
+			fmt.Print("\nData berhasil ditambahkan.\n")
+		}
+	} else {
+		fmt.Print("\nKapasitas penyimpanan penuh.\n")
+	}
+}
+
+func ubahJadwal(A *TabJadwal, n int, mkLama string) {
+	var found bool
+	var i int 
+	
+	i = 0
+	found = false
+
+	for i < n && found == false {
+		if A[i].NamaMK == mkLama {
+			fmt.Print("Masukkan Nama MK Baru: ")
+			fmt.Scan(&A[i].NamaMK)
+			fmt.Print("Masukkan Dosen Baru: ")
+			fmt.Scan(&A[i].Dosen)
+			fmt.Print("Masukkan Ruangan Baru: ")
+			fmt.Scan(&A[i].Ruangan)
+			fmt.Print("Masukkan Hari Baru: ")
+			fmt.Scan(&A[i].Hari)
+			fmt.Print("Masukkan Jam Mulai Baru (HHMM): ")
+			fmt.Scan(&A[i].JamMulai)
+			fmt.Print("Masukkan Jam Selesai Baru (HHMM): ")
+			fmt.Scan(&A[i].JamSelesai)
+			found = true
+			fmt.Print("\nData berhasil diubah.\n")
+		}
+		i = i + 1
+	}
+
+	if found == false {
+		fmt.Print("\nData mata kuliah tidak ditemukan.\n")
+	}
+}
+
+func hapusJadwal(A *TabJadwal, n *int, mk string) {
+	var found bool = false
+	var idx int = -1
+	var i int = 0
+
+	for i < *n && found == false {
+		if A[i].NamaMK == mk {
+			idx = i
+			found = true
+		}
+		i = i + 1
+	}
+
+	if found == true {
+		var j int = idx
+		for j < *n-1 {
+			A[j] = A[j+1]
+			j = j + 1
+		}
+		*n = *n - 1
+		fmt.Print("Data berhasil dihapus.\n")
+	} else {
+		fmt.Print("Data tidak ditemukan.\n")
+	}
+}
+
+func cariSequentialMK(A TabJadwal, n int, mk string) {
+	var i int = 0
+	var found bool = false
+
+	fmt.Print("\n--- Hasil Pencarian Sequential (MK: ", mk, ") ---\n")
+	for i < n {
+		if A[i].NamaMK == mk {
+			fmt.Printf("MK: %-10s | Dosen: %-7s | Ruang: %-10s | %-7s %d-%d\n", A[i].NamaMK, A[i].Dosen, A[i].Ruangan, A[i].Hari, A[i].JamMulai, A[i].JamSelesai)
+
+			found = true
+		}
+		i = i + 1
+	}
+
+	if found == false {
+		fmt.Print("Mata kuliah tidak ditemukan.\n")
+	}
+}
+
+func urutBerdasarkanDosen(A *TabJadwal, n int) {
+	var i, j int
+	var temp Jadwal
+	i = 1
+	for i < n {
+		temp = A[i]
+		j = i
+		for j > 0 && A[j-1].Dosen > temp.Dosen {
+			A[j] = A[j-1]
+			j = j - 1
+		}
+		A[j] = temp
+		i = i + 1
+	}
+}
+
+func cariBinaryDosen(A TabJadwal, n int, dosen string) {
+	urutBerdasarkanDosen(&A, n)
+
+	var left int = 0
+	var right int = n - 1
+	var mid int
+	var found bool = false
+	var idx int = -1
+
+	for left <= right && found == false {
+		mid = (left + right) / 2
+		if A[mid].Dosen == dosen {
+			found = true
+			idx = mid
+		} else if A[mid].Dosen < dosen {
+			left = mid + 1
+		} else {
+			right = mid - 1
+		}
+	}
+
+	fmt.Print("\n--- Hasil Pencarian Binary (Dosen: ", dosen, ") ---\n")
+	if found == true {
+		fmt.Printf("Ditemukan - MK: %-10s | Dosen: %-7s | Ruang: %-10s | %-7s %d-%d\n", A[idx].NamaMK, A[idx].Dosen, A[idx].Ruangan, A[idx].Hari, A[idx].JamMulai, A[idx].JamSelesai)
+
+	} else {
+		fmt.Print("Dosen tidak ditemukan.\n")
+	}
+}
+func tampilkanStatistik(A TabJadwal, n int) {
+	var hariDicari string
+	var jamSekarang int
+	fmt.Print("Masukkan Hari ini (Contoh: Senin): ")
+	fmt.Scan(&hariDicari)
+	fmt.Print("Masukkan Jam saat ini (HHMM, Contoh: 1200): ")
+	fmt.Scan(&jamSekarang)
+
+	var totalMenit int = 0
+	var sisaKelas int = 0
+	var i int = 0
+
+	for i < n {
+		var jamM int = A[i].JamMulai / 100
+		var mntM int = A[i].JamMulai % 100
+		var jamS int = A[i].JamSelesai / 100
+		var mntS int = A[i].JamSelesai % 100
+
+		var durasi int = ((jamS * 60) + mntS) - ((jamM * 60) + mntM)
+		totalMenit = totalMenit + durasi
+
+		if A[i].Hari == hariDicari && A[i].JamMulai >= jamSekarang {
+			sisaKelas = sisaKelas + 1
+		}
+		i = i + 1
+	}
+
+	var totalJam int = totalMenit / 60
+	var sisaMnt int = totalMenit % 60
+
+	fmt.Print("\n--- Statistik Akademik ---\n")
+	fmt.Print("1. Total jam kuliah minggu ini: ", totalJam, " Jam ", sisaMnt, " Menit\n")
+	fmt.Print("2. Sisa kelas pada hari ", hariDicari, " setelah jam ", jamSekarang, " : ", sisaKelas, " kelas\n")
+}
+
+func tampilkanSemua(A TabJadwal, n int) {
+	var i int = 0
+	fmt.Print("\n--- Daftar Jadwal Kelas ---\n")
+	if n == 0 {
+		fmt.Print("Belum ada data jadwal.\n")
+	}
+	for i < n {
+		fmt.Printf("%d. %-10s | Dosen: %-7s | Ruang: %-10s | %-7s %d-%d\n",i+1 , A[i].NamaMK, A[i].Dosen, A[i].Ruangan, A[i].Hari, A[i].JamMulai, A[i].JamSelesai)
+		i = i + 1
+	}
+}
+
+func bobotHari(hari string) int {
+	if hari == "Senin" || hari == "senin" {
+		return 1
+	} else if hari == "Selasa" || hari == "selasa" {
+		return 2
+	} else if hari == "Rabu" || hari == "rabu" {
+		return 3
+	} else if hari == "Kamis" || hari == "kamis" {
+		return 4
+	} else if hari == "Jumat" || hari == "jumat" {
+		return 5
+	} else if hari == "Sabtu" || hari == "sabtu" {
+		return 6
+	} else if hari == "Minggu" || hari == "minggu" {
+		return 7
+	}
+	return 8
+}
+
+func urutBerdasarkanHari(A *TabJadwal, n int) {
+	var i, j int
+	var temp Jadwal
+	
+	i = 1
+	for i < n {
+		temp = A[i]
+		j = i
+		
+		for j > 0 && (bobotHari(A[j-1].Hari) > bobotHari(temp.Hari) || (bobotHari(A[j-1].Hari) == bobotHari(temp.Hari) && A[j-1].JamMulai > temp.JamMulai)) {
+			A[j] = A[j-1]
+			j = j - 1
+		}
+		A[j] = temp
+		i = i + 1
+	}
+	fmt.Print("Data berhasil diurutkan berdasarkan Hari dan Waktu.\n")
+}
+
+
+func main() {
+	var data TabJadwal
+	var nData int = 0
+	var pilihan int
+	var berjalan bool = true
+	
+	tambahJadwal(&data, &nData, "Matvek", "Mahmud", "TULT0714", "Senin", 1030, 1330)
+	tambahJadwal(&data, &nData, "Kalkulus", "Adit", "TULT0707", "Senin", 1330,1530)
+	tambahJadwal(&data, &nData, "Alpro2", "Lydia", "E301", "Selasa", 830, 1030)
+	tambahJadwal(&data, &nData, "Etika_AI", "Adalah", "TULT0714", "Selasa", 1230, 1430)
+	tambahJadwal(&data, &nData, "COA", "Ghifa", "KU1.03.14", "Rabu", 830, 1130)
+	tambahJadwal(&data, &nData, "Alpro2", "Lydia", "KU3.03.03", "Rabu", 1330, 1530)
+	tambahJadwal(&data, &nData, "PBD", "Cahyo", "TULT0707", "Rabu", 1530, 1830)
+	
+	for berjalan == true {
+		fmt.Print("\n==================================\n")
+		fmt.Print(" SISTEM MANAJEMEN JADWAL (JadwalKu)\n")
+		fmt.Print("==================================\n")
+		fmt.Print("1. Tambah Jadwal\n")
+		fmt.Print("2. Ubah Jadwal\n")
+		fmt.Print("3. Hapus Jadwal\n")
+		fmt.Print("4. Tampilkan Semua Jadwal\n")
+		fmt.Print("5. Urutkan Jadwal (Berdasarkan Hari & Jam)\n")
+		fmt.Print("6. Cari berdasarkan Dosen (Binary)\n")
+		fmt.Print("7. Cari berdasarkan MK (Sequential)\n")
+		fmt.Print("8. Lihat Statistik\n")
+		fmt.Print("0. Keluar\n")
+		fmt.Print("Pilih menu: ")
+		fmt.Scan(&pilihan)
+
+		if pilihan == 0 {
+			berjalan = false
+			fmt.Print("Terima kasih.\n")
+		} else if pilihan == 1 {
+			var mk, dos, ru, hr string
+			var jm, js int
+			fmt.Print("Mata Kuliah: ")
+			fmt.Scan(&mk)
+			fmt.Print("Dosen: ")
+			fmt.Scan(&dos)
+			fmt.Print("Ruangan: ")
+			fmt.Scan(&ru)
+			fmt.Print("Hari: ")
+			fmt.Scan(&hr)
+			fmt.Print("Jam Mulai (HHMM): ")
+			fmt.Scan(&jm)
+			fmt.Print("Jam Selesai (HHMM): ")
+			fmt.Scan(&js)
+			tambahJadwal(&data, &nData, mk, dos, ru, hr, jm, js)
+		} else if pilihan == 2 {
+			var mkLama string
+			fmt.Print("Masukkan Nama MK yang ingin diubah: ")
+			fmt.Scan(&mkLama)
+			ubahJadwal(&data, nData, mkLama)
+		} else if pilihan == 3 {
+			var mkHapus string
+			fmt.Print("Masukkan Nama MK yang ingin dihapus: ")
+			fmt.Scan(&mkHapus)
+			hapusJadwal(&data, &nData, mkHapus)
+		} else if pilihan == 4 {
+			tampilkanSemua(data, nData)
+		} else if pilihan == 5 {
+			urutBerdasarkanHari(&data, nData)
+		} else if pilihan == 6 {
+			var dosCari string
+			fmt.Print("Masukkan Nama Dosen: ")
+			fmt.Scan(&dosCari)
+			cariBinaryDosen(data, nData, dosCari) 
+		} else if pilihan == 7 {
+			var mkCari string
+			fmt.Print("Masukkan Nama MK: ")
+			fmt.Scan(&mkCari)
+			cariSequentialMK(data, nData, mkCari)
+		} else if pilihan == 8 {
+			tampilkanStatistik(data, nData)
+		} else {
+			fmt.Print("Pilihan tidak valid.\n")
+		}
+	}
+}
