@@ -288,13 +288,13 @@ func main() {
 	nData = 0
 	berjalan = true
 	
-	tambahJadwal(&data, &nData, "Matvek", "Mahmud", "TULT0714", "Senin", 1030, 1330)
-	tambahJadwal(&data, &nData, "Kalkulus", "Adit", "TULT0707", "Senin", 1330,1530)
 	tambahJadwal(&data, &nData, "Alpro2", "Lydia", "E301", "Selasa", 830, 1030)
+	tambahJadwal(&data, &nData, "Matvek", "Mahmud", "TULT0714", "Senin", 1030, 1330)
+	tambahJadwal(&data, &nData, "Alpro2", "Lydia", "KU3.03.03", "Rabu", 1330, 1530)
+	tambahJadwal(&data, &nData, "Kalkulus", "Adit", "TULT0707", "Senin", 1330,1530)
+	tambahJadwal(&data, &nData, "PBD", "Cahyo", "TULT0707", "Rabu", 1530, 1830)
 	tambahJadwal(&data, &nData, "Etika_AI", "Gamma", "TULT0714", "Selasa", 1230, 1430)
 	tambahJadwal(&data, &nData, "COA", "Ghifari", "KU1.03.14", "Rabu", 830, 1130)
-	tambahJadwal(&data, &nData, "Alpro2", "Lydia", "KU3.03.03", "Rabu", 1330, 1530)
-	tambahJadwal(&data, &nData, "PBD", "Cahyo", "TULT0707", "Rabu", 1530, 1830)
 	
 	for berjalan == true {
 		fmt.Print("\n==================================\n")
