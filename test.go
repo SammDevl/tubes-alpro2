@@ -1,4 +1,5 @@
 package main
+
 import "fmt"
 
 const MAX_DATA = 1000
@@ -154,12 +155,14 @@ func urutBerdasarkanDosen(A *TabJadwal, n int) {
 func cariBinaryDosen(A TabJadwal, n int, dosen string) {
 	urutBerdasarkanDosen(&A, n)
 
-	var left int = 0
-	var right int = n - 1
+	var left int 
+	var right int 
 	var mid int
 	var found bool 
 	var idx int
 	
+	left = 0
+	right = n - 1
 	found = false
 	idx = -1
 
@@ -228,12 +231,12 @@ func tampilkanSemua(A TabJadwal, n int) {
 	
 	i = 0
 	
-	fmt.Print("\n--- Daftar Jadwal Kelas ---\n")
+	fmt.Print("\nNo | Mata Kuliah |   Dosen   |   Ruang   |   Hari   | Jam\n")
 	if n == 0 {
 		fmt.Print("Belum ada data jadwal.\n")
 	}
 	for i < n {
-		fmt.Printf("%d. %-10s | Dosen: %-7s | Ruang: %-10s | %-7s %d-%d\n",i+1 , A[i].NamaMK, A[i].Dosen, A[i].Ruangan, A[i].Hari, A[i].JamMulai, A[i].JamSelesai)
+		fmt.Printf("%d  | %-11s | %-9s | %-9s | %-8s | %d-%d\n",i+1 , A[i].NamaMK, A[i].Dosen, A[i].Ruangan, A[i].Hari, A[i].JamMulai, A[i].JamSelesai)
 		i = i + 1
 	}
 }
@@ -257,10 +260,11 @@ func bobotHari(hari string) int {
 	return 8
 }
 
-func urutBerdasarkanHari(A *TabJadwal, n int) {
+func urutBerdasarkanHari(A *TabJadwal, n int, pilihan string) {
 	var i, j int
 	var temp Jadwal
 	
+	if pilihan == "a" {
 	i = 1
 	for i < n {
 		temp = A[i]
@@ -273,7 +277,21 @@ func urutBerdasarkanHari(A *TabJadwal, n int) {
 		A[j] = temp
 		i = i + 1
 	}
-	fmt.Print("Data berhasil diurutkan berdasarkan Hari dan Waktu.\n")
+	fmt.Print("Data berhasil diurutkan Ascending.\n")
+	} else if pilihan == "d" {
+		for i < n {
+		temp = A[i]
+		j = i
+		
+		for j > 0 && (bobotHari(A[j-1].Hari) < bobotHari(temp.Hari) || (bobotHari(A[j-1].Hari) == bobotHari(temp.Hari) && A[j-1].JamMulai < temp.JamMulai)) {
+			A[j] = A[j-1]
+			j = j - 1
+		}
+		A[j] = temp
+		i = i + 1
+	}
+	fmt.Print("Data berhasil diurutkan Descending.\n")
+	}
 }
 
 
@@ -282,7 +300,7 @@ func main() {
 	var nData int
 	var pilihan int
 	var berjalan bool
-	var mk, dos, ru, hr, mkLama, mkHapus, dosCari, mkCari string
+	var mk, dos, ru, hr, mkLama, mkHapus, dosCari, mkCari, pilihanUrut string
 	var jm, js int
 	
 	nData = 0
@@ -340,7 +358,9 @@ func main() {
 		} else if pilihan == 4 {
 			tampilkanSemua(data, nData)
 		} else if pilihan == 5 {
-			urutBerdasarkanHari(&data, nData)
+			fmt.Print("Pilih urutan (a/ascending, d/descending): ")
+			fmt.Scan(&pilihanUrut)
+			urutBerdasarkanHari(&data, nData, pilihanUrut)
 		} else if pilihan == 6 {
 			fmt.Print("Masukkan Nama Dosen: ")
 			fmt.Scan(&dosCari)
