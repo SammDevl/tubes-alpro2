@@ -14,4 +14,4 @@ Spesifikasi:
 - Sistem dapat mencatat waktu mulai, waktu selesai, dan lokasi ruangan untuk setiap sesi perkuliahan.
 - Pengguna dapat mencari data jadwal berdasarkan nama mata kuliah atau nama dosen menggunakan Sequential dan Binary Search.
 - Pengguna dapat mengurutkan daftar mata kuliah berdasarkan jam mulai kelas menggunakan Selection dan Insertion Sort.
-- Sistem dapat menampilkan statistik total jam kuliah per minggu dan jumlah mata kuliah yang tersisa dalam satu hari. T
+- Sistem dapat menampilkan statistik total jam kuliah per minggu dan jumlah mata kuliah yang tersisa dalam satu hari.
