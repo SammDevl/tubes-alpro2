@@ -86,10 +86,13 @@ func ubahJadwal(A *TabJadwal, n int, mkLama string) {
 }
 
 func hapusJadwal(A *TabJadwal, n *int, mk string) {
-	var found bool = false
-	var idx int = -1
-	var i int = 0
+	var found bool
+	var idx int
+	var i int
 
+	found = false
+	i = 0
+	idx = -1
 	for i < *n && found == false {
 		if A[i].NamaMK == mk {
 			idx = i
@@ -151,7 +154,7 @@ func urutBerdasarkanDosen(A *TabJadwal, n int) {
 
 func cariBinaryDosen(A TabJadwal, n int, dosen string) {
 	urutBerdasarkanDosen(&A, n)
-
+	tampilkanSemua(A,n)
 	var left int 
 	var right int 
 	var mid int
@@ -257,6 +260,7 @@ func bobotHari(hari string) int {
 	return 8
 }
 
+//INSERTION SORT
 func urutBerdasarkanHari(A *TabJadwal, n int, pilihan string) {
 	var i, j int
 	var temp Jadwal
@@ -276,7 +280,7 @@ func urutBerdasarkanHari(A *TabJadwal, n int, pilihan string) {
 		}
 		fmt.Print("Data berhasil diurutkan Ascending (Insertion Sort).\n")
 	} else if pilihan == "d" {
-		i = 1 
+		i = 1 // Mengatasi bug variabel i agar ter-reset sebelum perulangan baru
 		for i < n {
 			temp = A[i]
 			j = i
@@ -292,38 +296,38 @@ func urutBerdasarkanHari(A *TabJadwal, n int, pilihan string) {
 	}
 }
 
+//SELECTION SORT
 func urutBerdasarkanHariSelection(A *TabJadwal, n int, pilihan string) {
 	var i, j, idxTarget int
 	var temp Jadwal
 
-	if pilihan == "a" {
+	if pilihan == "a" { // Ascending
 		i = 0
 		for i < n-1 {
 			idxTarget = i
 			j = i + 1
 			for j < n {
-				if bobotHari(A[j].Hari) < bobotHari(A[idxTarget].Hari) || 
-				   (bobotHari(A[j].Hari) == bobotHari(A[idxTarget].Hari) && A[j].JamMulai < A[idxTarget].JamMulai) {
+				if bobotHari(A[j].Hari) < bobotHari(A[idxTarget].Hari) || (bobotHari(A[j].Hari) == bobotHari(A[idxTarget].Hari) && A[j].JamMulai < A[idxTarget].JamMulai) {
 					idxTarget = j
 				}
 				j = j + 1
 			}
+			// Swap proses
 			temp = A[i]
 			A[i] = A[idxTarget]
 			A[idxTarget] = temp
-			
+
 			i = i + 1
 		}
 		fmt.Print("Data berhasil diurutkan Ascending (Selection Sort).\n")
-		
-	} else if pilihan == "d" {
+	
+	} else if pilihan == "d" { // Descending
 		i = 0
 		for i < n-1 {
 			idxTarget = i
 			j = i + 1
 			for j < n {
-				if bobotHari(A[j].Hari) > bobotHari(A[idxTarget].Hari) || 
-				   (bobotHari(A[j].Hari) == bobotHari(A[idxTarget].Hari) && A[j].JamMulai > A[idxTarget].JamMulai) {
+				if bobotHari(A[j].Hari) > bobotHari(A[idxTarget].Hari) || (bobotHari(A[j].Hari) == bobotHari(A[idxTarget].Hari) && A[j].JamMulai > A[idxTarget].JamMulai) {
 					idxTarget = j
 				}
 				j = j + 1
@@ -349,9 +353,9 @@ func main() {
 	nData = 0
 	berjalan = true
 	
-	tambahJadwal(&data, &nData, "Alpro2", "Lydia", "E301", "Selasa", 830, 1030)
+	tambahJadwal(&data, &nData, "Alpro2", "Lds", "E301", "Selasa", 830, 1030)
 	tambahJadwal(&data, &nData, "Matvek", "Mahmud", "TULT0714", "Senin", 1030, 1330)
-	tambahJadwal(&data, &nData, "Alpro2", "Lydia", "KU3.03.03", "Rabu", 1330, 1530)
+	tambahJadwal(&data, &nData, "Alpro2", "Lds", "KU3.03.03", "Rabu", 1330, 1530)
 	tambahJadwal(&data, &nData, "Kalkulus", "Adit", "TULT0707", "Senin", 1330, 1530)
 	tambahJadwal(&data, &nData, "PBD", "Cahyo", "TULT0707", "Rabu", 1530, 1830)
 	tambahJadwal(&data, &nData, "Etika_AI", "Gamma", "TULT0714", "Selasa", 1230, 1430)
@@ -365,8 +369,8 @@ func main() {
 		fmt.Print("2. Ubah Jadwal\n")
 		fmt.Print("3. Hapus Jadwal\n")
 		fmt.Print("4. Tampilkan Semua Jadwal\n")
-		fmt.Print("5. Urutkan Jadwal (Insertion Sort)\n")
-		fmt.Print("6. Urutkan Jadwal (Selection Sort)\n")
+		fmt.Print("5. Urutkan Jadwal (Hari & Jam - Insertion Sort)\n")
+		fmt.Print("6. Urutkan Jadwal (Hari & Jam - Selection Sort)\n")
 		fmt.Print("7. Cari berdasarkan Dosen (Binary)\n")
 		fmt.Print("8. Cari berdasarkan MK (Sequential)\n")
 		fmt.Print("9. Lihat Statistik\n")
